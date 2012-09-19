@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Phorever by dcousineau</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Phorever</h1>
+        <h2>Role-based daemon and cron management built in PHP for PHP projects</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/dcousineau/phorever/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/dcousineau/phorever/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/dcousineau/phorever" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2>Overview &amp; Goals</h2>
+
+<p>Phorever provides an easy way to launch and manage background processes based on configuration defined in a <code>phorever.json</code> file.</p>
+
+<p>Phorever will automatically keep track of all running processes, respawning them based on configured behavior, and fire notifications on aberrant behavior.</p>
+
+<p>Phorever is installable via <a href="http://getcomposer.org/">Composer</a> and automatically drops a binary to interact with.</p>
+
+<p>Phorever's ultimate goal is to make provisioning servers and monitoring long-running processes more idiot proof. For example, a simple <code>phorever start scheduler</code> will ensure all background processes required for a scheduler server are running.</p>
+
+<h2>Project Status</h2>
+
+<p>The project is currently in an MVP state after some exploratory coding. Currently it launches processes based on requested role and respawns processes after a resurrection wait time.</p>
+
+<p><strong>Currently <em>not</em> supported, but desperately needed before BETA1:</strong></p>
+
+<ul>
+<li>Redirecting logs</li>
+<li>Processes that daemonize themselves (cannot check custom PIDs)</li>
+<li>Giving up after certain thresholds</li>
+<li>Notification on aberrant behavior</li>
+</ul><p><strong>Features to come:</strong></p>
+
+<ul>
+<li>Configure respawn and notification behavior</li>
+<li>Hooks for your own custom event listener classes for more fine-grained control</li>
+<li>Status monitor and statistical logs</li>
+</ul>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
