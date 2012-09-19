@@ -1,0 +1,25 @@
+{
+    "name": "dcousineau/phorever",
+    "description": "Role-based process and daemon management for PHP",
+    "homepage": "http://phorever.github.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Cousineau",
+            "email": "dcousineau@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-pcntl": "*",
+        "symfony/console": "2.1.*",
+        "symfony/config": "2.1.*"
+    },
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "bin": [
+        "bin/phorever"
+    ],
+    "minimum-stability": "dev"
+}

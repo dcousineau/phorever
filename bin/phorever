@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+set_include_path(
+    '.' . PATH_SEPARATOR .
+    dirname(__DIR__) . PATH_SEPARATOR .
+    get_include_path()
+);
+
+set_time_limit(0);
+
+require_once 'vendor/autoload.php';
+
+use \Phorever\Phorever;
+use \Phorever\Console\Application;
+use \Phorever\Console\Command;
+use \Phorever\Configuration;
+
+$phorever = new Phorever(new Configuration());
+
+$app = new Application($phorever);
+
+$app->run();

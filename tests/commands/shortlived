@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Shortlived CLI application
+ */
+echo "Started\n";
+sleep(5);
+echo "Stopped\n";

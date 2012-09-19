@@ -1,0 +1,19 @@
+{
+    "pidfile": "./phorever_cool.pid",
+    "processes": [
+        {
+            "name": "Long Lived",
+            "roles": ["rolea", "roleb"],
+
+            "up": "./tests/commands/longlived"
+        },
+        {
+            "name": "Short Lived",
+            "roles": ["rolea"],
+
+            "up": "./tests/commands/shortlived",
+
+            "resurrect_after": 10
+        }
+    ]
+}

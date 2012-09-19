@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+echo "Started\n";
+while(true) {
+    sleep(10);
+    echo "Tick\n";
+}
