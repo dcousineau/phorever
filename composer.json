@@ -1,7 +1,7 @@
 {
     "name": "dcousineau/phorever",
     "description": "Role-based process and daemon management for PHP",
-    "homepage": "http://phorever.github.com",
+    "homepage": "http://dcousineau.github.com/phorever",
     "license": "MIT",
     "authors": [
         {

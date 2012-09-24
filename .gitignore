@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 vendor/
+logs/
 phorever.json
 composer.lock
 *.pid

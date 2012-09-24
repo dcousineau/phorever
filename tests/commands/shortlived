@@ -3,6 +3,12 @@
 /**
  * Shortlived CLI application
  */
-echo "Started\n";
+echo "Started " . microtime(true) . "\n";
+
+$stderr = fopen('php://stderr', 'w');
+fwrite($stderr,"stderr Tick " . microtime(true) . "\n");
+fclose($stderr);
+
 sleep(5);
-echo "Stopped\n";
+
+echo "Stopped " . microtime(true) . "\n";

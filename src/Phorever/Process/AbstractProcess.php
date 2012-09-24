@@ -25,10 +25,25 @@ abstract class AbstractProcess {
     protected $config;
 
     /**
+     * Generated machine name
+     *
+     * @var string
+     */
+    protected $machine_name;
+
+    /**
      * @param array $config Individual process configuration array
      */
     public function __construct(array $config) {
         $this->config = $config;
+        $this->init();
+    }
+
+    /**
+     * Overridable init function called after construct
+     */
+    public function init() {
+        //noop
     }
 
     /**
@@ -84,6 +99,14 @@ abstract class AbstractProcess {
      */
     public function getName() {
         return $this->get('name');
+    }
+
+    public function getMachineName() {
+        if (!$this->machine_name) {
+            $this->machine_name = preg_replace('/[^a-z0-9_\-\.]+/i', '_', strtolower(trim($this->getName())));
+        }
+
+        return $this->machine_name;
     }
 
     /**

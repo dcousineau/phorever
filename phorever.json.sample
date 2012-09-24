@@ -5,7 +5,9 @@
             "name": "Long Lived",
             "roles": ["rolea", "roleb"],
 
-            "up": "./tests/commands/longlived"
+            "up": "./tests/commands/longlived",
+
+            "enable_logging": true
         },
         {
             "name": "Short Lived",
@@ -13,7 +15,9 @@
 
             "up": "./tests/commands/shortlived",
 
-            "resurrect_after": 10
+            "resurrect_after": 10,
+
+            "enable_logging": true
         }
     ]
 }

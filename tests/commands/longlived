@@ -1,7 +1,10 @@
 #!/usr/bin/env php
 <?php
-echo "Started\n";
+echo "Started " . microtime(true) . "\n";
 while(true) {
-    sleep(10);
-    echo "Tick\n";
+    sleep(5);
+    $stderr = fopen('php://stderr', 'w');
+    fwrite($stderr,"stderr Tick " . microtime(true) . "\n");
+    fclose($stderr);
+    echo "Tick " . microtime(true) . "\n";
 }
