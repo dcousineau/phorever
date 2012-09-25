@@ -130,7 +130,7 @@ class Process extends AbstractProcess {
             foreach ($this->pipes as $i => $pipe) {
                 if (is_resource($pipe))
                     fclose($pipe);
-                    $htis->pipes[$i] = null;
+                    $this->pipes[$i] = null;
             }
         }
 
