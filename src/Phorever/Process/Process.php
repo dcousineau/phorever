@@ -106,6 +106,7 @@ class Process extends AbstractProcess {
 
             //If process has been down
             if ($now - $this->down >= $this->get('resurrect_after', 60)) {
+                $this->down = null;
                 $this->execute();
             }
         }
