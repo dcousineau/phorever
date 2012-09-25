@@ -35,8 +35,8 @@ class Process extends AbstractProcess {
 
     public function init() {
         if ($this->get('enable_logging')) {
-            $stdout_logfile = str_replace(array('%name%'), array($this->getMachineName()), $this->get('log_file'));
-            $stderr_logfile = str_replace(array('%name%'), array($this->getMachineName()), $this->get('errorlog_file'));
+            $stdout_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('log_file'));
+            $stderr_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('errorlog_file'));
 
             if ($stdout_logfile) {
                 $file = $stdout_logfile;

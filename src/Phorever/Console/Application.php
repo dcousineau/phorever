@@ -22,6 +22,7 @@ class Application extends BaseApplication
 
         $commands[] = new Command\StartCommand();
         $commands[] = new Command\StopCommand();
+        $commands[] = new Command\StatusCommand();
 
         return $commands;
     }

@@ -3,6 +3,10 @@ namespace Phorever;
 
 class Daemon
 {
+    const RUNNING_OK = "running_ok";
+    const STOPPED_BUT_PID_PRESENT = "stopped_but_pid_present";
+    const STOPPED_OK = "stopped_ok";
+
     /**
      * @var bool
      */
@@ -60,7 +64,27 @@ class Daemon
         $this->clearPid();
     }
 
-    public function getPid() {
+    public function status() {
+        if ($pid = $this->getPid(true)) {
+            $output = array();
+            $result = 0;
+
+            exec("ps $pid", $output, $result);
+
+            // check the number of lines that were returned
+            if(count($output) >= 2){
+                return self::RUNNING_OK;
+            } else {
+                return self::STOPPED_BUT_PID_PRESENT;
+            }
+        } else {
+            return self::STOPPED_OK;
+        }
+    }
+
+    public function getPid($force_file = false) {
+        if ($force_file) $this->pid = null;
+
         if (!$this->pid && file_exists($this->pidfile))
             $this->pid = (int)file_get_contents($this->pidfile);
 

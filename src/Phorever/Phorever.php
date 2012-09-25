@@ -32,6 +32,9 @@ class Phorever {
             $role = strtolower($options['role']);
 
         foreach ($this->get('processes') as $processConfig) {
+            //TODO: Centralized logging class to be injected into Process
+            $processConfig['log_directory'] = $this->get('log_directory');
+
             //TODO: Select class based on configured type
             $process = new Process($processConfig);
 

@@ -16,6 +16,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('pidfile')
                     ->defaultValue('./phorever.pid')
                 ->end()
+                ->scalarNode('log_directory')
+                    ->defaultValue('./logs/')->cannotBeEmpty()
+                ->end()
                 ->arrayNode('processes')
                     ->prototype('array')
                         ->children()
@@ -24,12 +27,13 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('roles')->prototype('scalar')->end()->end()
                             //process information
                             ->scalarNode('up')->isRequired()->cannotBeEmpty()->end()
+
                             //failure management
                             ->scalarNode('resurrect_after')->defaultValue(5)->end()
                             //log files
                             ->booleanNode('enable_logging')->defaultValue(true)->end()
-                            ->scalarNode('log_file')->defaultValue('./logs/%name%.log')->cannotBeEmpty()->end()
-                            ->scalarNode('errorlog_file')->defaultValue('./logs/%name%.err.log')->cannotBeEmpty()->end()
+                            ->scalarNode('log_file')->defaultValue('%name%.log')->cannotBeEmpty()->end()
+                            ->scalarNode('errorlog_file')->defaultValue('%name%.err.log')->cannotBeEmpty()->end()
                         ->end()
                     ->end()
                 ->end()
