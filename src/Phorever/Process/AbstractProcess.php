@@ -1,6 +1,8 @@
 <?php
 namespace Phorever\Process;
 
+use Monolog\Logger;
+
 abstract class AbstractProcess {
     /**
      * Returned by tick function to indicate the process is in a known state and everything
@@ -32,10 +34,16 @@ abstract class AbstractProcess {
     protected $machine_name;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param array $config Individual process configuration array
      */
-    public function __construct(array $config) {
+    public function __construct(array $config, Logger $logger) {
         $this->config = $config;
+        $this->logger = $logger;
         $this->init();
     }
 

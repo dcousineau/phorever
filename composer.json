@@ -1,6 +1,7 @@
 {
     "name": "dcousineau/phorever",
     "description": "Role-based process and daemon management for PHP",
+    "keywords": ["daemon", "process"],
     "homepage": "http://dcousineau.github.com/phorever",
     "license": "MIT",
     "authors": [
@@ -13,10 +14,17 @@
         "php": ">=5.3.3",
         "ext-pcntl": "*",
         "symfony/console": "2.1.*",
-        "symfony/config": "2.1.*"
+        "symfony/config": "2.1.*",
+        "monolog/monolog": "1.2.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "suggest": {
+        "ext-json": "*"
     },
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "Phorever": "src/" }
     },
     "bin": [
         "bin/phorever"

@@ -2,24 +2,28 @@
 declare(ticks = 1);
 namespace Phorever;
 
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Phorever\Process\Process;
+use Phorever\Monolog\Formatter\ConsoleFormatter;
 
 class Phorever {
     protected $processes = array();
     protected $signalled = false;
 
-    /**
-     * @var \Symfony\Component\Config\Definition\ConfigurationInterface
-     */
-    protected $configuration;
+
     protected $config = array();
 
-    public function __construct(ConfigurationInterface $configuration) {
-        $this->configuration = $configuration;
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    public function __construct(array $config, Logger $logger) {
+        $this->config = $config;
+        $this->logger = $logger;
     }
 
     public function run(array $options = array()) {
@@ -28,15 +32,21 @@ class Phorever {
         pcntl_signal(SIGHUP, array($this, 'receiveSig'));
 
         $role = null;
-        if (isset($options['role']))
+        if (isset($options['role'])) {
             $role = strtolower($options['role']);
+            $this->logger->addInfo(sprintf("Starting Phorever with role <info>%s</info>", $role));
+        } else {
+            $this->logger->addWarning("Starting Phorever without a role");
+        }
+
+        $loggingConfig = $this->get('logging');
 
         foreach ($this->get('processes') as $processConfig) {
             //TODO: Centralized logging class to be injected into Process
-            $processConfig['log_directory'] = $this->get('log_directory');
+            $processConfig['log_directory'] = $loggingConfig['directory'];
 
             //TODO: Select class based on configured type
-            $process = new Process($processConfig);
+            $process = new Process($processConfig, $this->logger);
 
             if ($role && !$process->hasRole($role))
                 continue; //Not in our target role
@@ -45,7 +55,7 @@ class Phorever {
 
             $this->processes[] = $process;
 
-            echo sprintf("Started %s...\n", $process->getName());
+            $this->logger->addInfo(sprintf("Started '%s'", $process->getName()));
         }
 
         while (!$this->signalled) {
@@ -54,14 +64,26 @@ class Phorever {
                 $resp = $process->tick();
 
                 if ($resp == Process::STATUS_GARBAGE_COLLECT) {
+                    $this->logger->addWarning(sprintf("Process '%s' marked as ready for garbage collection", $process->getName()));
                     unset($this->processes[$i]);
                 }
             }
 
-            if (empty($this->processes))
-                exit();
-            else
+            if (empty($this->processes)) {
+                $this->logger->addWarning("Process list empty, exiting");
+                exit(0);
+            } else {
                 sleep(1);
+            }
+        }
+    }
+
+    public function stop() {
+        $this->logger->addInfo("Stopping Phorever and all subprocesses");
+        foreach ($this->processes as $process) {
+            /** @var $process Process */
+            $this->logger->addInfo(sprintf("Stopping '%s'", $process->getName()));
+            $process->terminate();
         }
     }
 
@@ -69,41 +91,59 @@ class Phorever {
         $this->signalled = true;
         switch($sig) {
             case SIGTERM:
-            case SIGINT:
+                $this->logger->addWarning("Received SIGTERM");
+                $this->stop();
+                exit(0);
 
-                foreach ($this->processes as $process) {
-                    /** @var $process Process */
-                    $process->terminate();
-                }
-                exit();
+                break;
+            case SIGINT:
+                $this->logger->addWarning("Received SIGINT");
+                $this->stop();
+                exit(0);
 
                 break;
             case SIGHUP:
+
 
                 break;
             default:
 
                 break;
         }
+
+        exit(127);
     }
 
-    public function loadConfig(array $config) {
-        $processor = new Processor();
-
-        $this->config = $processor->processConfiguration($this->configuration, array($config));
-
-        return $this;
+    /**
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
     }
 
-    public function initializeFromFile($file = null) {
-        if ($file == null)
-            $file = getcwd() . '/phorever.json';
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
-        if (!file_exists($file)) {
-            throw new \Exception("Could not find phorever configuration file");
-        }
+    /**
+     * @param array $config
+     */
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+    }
 
-        $this->loadConfig(json_decode(file_get_contents($file), true));
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     public function get($key, $default = null) {

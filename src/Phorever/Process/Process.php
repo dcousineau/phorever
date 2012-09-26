@@ -34,9 +34,12 @@ class Process extends AbstractProcess {
     protected $stderr_file = false;
 
     public function init() {
-        if ($this->get('enable_logging')) {
-            $stdout_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('log_file'));
-            $stderr_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('errorlog_file'));
+
+        if ($this->get('log_forwarding')) {
+            $this->logger->addDebug("Enabling log forwarding");
+
+            $stdout_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('stdout_file'));
+            $stderr_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('stderr_file'));
 
             if ($stdout_logfile) {
                 $file = $stdout_logfile;

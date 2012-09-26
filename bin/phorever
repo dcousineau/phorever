@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+date_default_timezone_set('UTC');
+
 set_include_path(
     '.' . PATH_SEPARATOR .
     dirname(__DIR__) . PATH_SEPARATOR .
@@ -13,11 +15,12 @@ require_once 'vendor/autoload.php';
 
 use \Phorever\Phorever;
 use \Phorever\Console\Application;
-use \Phorever\Console\Command;
-use \Phorever\Configuration;
 
-$phorever = new Phorever(new Configuration());
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
-$app = new Application($phorever);
+$input = new ArgvInput();
+$output = new ConsoleOutput();
 
-$app->run();
+$app = new Application('Phorever', '0.1.0');
+$app->run($input, $output);
