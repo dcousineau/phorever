@@ -51,7 +51,7 @@ class Phorever {
             if ($role && !$process->hasRole($role))
                 continue; //Not in our target role
 
-            $this->logger->addInfo(sprintf("Loaded Process '%s'", $process->getName()));
+            $this->logger->addDebug(sprintf("Loaded Process '%s'", $process->getName()));
 
             $process->execute();
 
