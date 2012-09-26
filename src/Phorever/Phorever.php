@@ -51,14 +51,16 @@ class Phorever {
             if ($role && !$process->hasRole($role))
                 continue; //Not in our target role
 
+            $this->logger->addInfo(sprintf("Loaded Process '%s'", $process->getName()));
+
             $process->execute();
 
             $this->processes[] = $process;
-
-            $this->logger->addInfo(sprintf("Started '%s'", $process->getName()));
         }
 
         while (!$this->signalled) {
+            $this->logger->addDebug("Tick!");
+
             foreach ($this->processes as $i => &$process) {
                 /** @var $process Process */
                 $resp = $process->tick();
@@ -82,7 +84,6 @@ class Phorever {
         $this->logger->addInfo("Stopping Phorever and all subprocesses");
         foreach ($this->processes as $process) {
             /** @var $process Process */
-            $this->logger->addInfo(sprintf("Stopping '%s'", $process->getName()));
             $process->terminate();
         }
     }
@@ -91,7 +92,7 @@ class Phorever {
         $this->signalled = true;
         switch($sig) {
             case SIGTERM:
-                $this->logger->addWarning("Received SIGTERM");
+                $this->logger->addError("Received SIGTERM");
                 $this->stop();
                 exit(0);
 

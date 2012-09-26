@@ -34,14 +34,18 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $level = false;
+        if ($input->getOption('verbose'))
+            $level = Logger::DEBUG;
+
         $logger = new Logger('phorever');
 
         if ($input->getOption('daemon')) {
-            $logger->pushHandler($handler = new StreamHandler($this->config['logging']['directory'] . 'phorever.log', Logger::INFO));
+            $logger->pushHandler($handler = new StreamHandler($this->config['logging']['directory'] . 'phorever.log', $level ?: Logger::INFO));
             $handler->setFormatter(new FileFormatter());
         } else {
             $logger->pushHandler($stderrHandler = new ConsoleHandler($output->getErrorOutput(), Logger::ERROR, false));
-            $logger->pushHandler($stdoutHandler = new ConsoleHandler($output, Logger::INFO));
+            $logger->pushHandler($stdoutHandler = new ConsoleHandler($output, $level ?: Logger::INFO));
 
             $stderrHandler->setFormatter(new ConsoleFormatter());
             $stdoutHandler->setFormatter(new ConsoleFormatter());

@@ -129,4 +129,17 @@ abstract class AbstractProcess {
 
         return in_array($role, $roles);
     }
+
+    protected function debug($message, array $context = array()) {
+        $this->logger->addDebug(sprintf("[%s] %s", $this->getName(), $message), $context);
+    }
+    protected function info($message, array $context = array()) {
+        $this->logger->addInfo(sprintf("[%s] %s", $this->getName(), $message), $context);
+    }
+    protected function warn($message, array $context = array()) {
+        $this->logger->addWarning(sprintf("[%s] %s", $this->getName(), $message), $context);
+    }
+    protected function error($message, array $context = array()) {
+        $this->logger->addError(sprintf("[%s] %s", $this->getName(), $message), $context);
+    }
 }

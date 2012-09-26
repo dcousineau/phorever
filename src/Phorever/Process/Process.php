@@ -36,7 +36,7 @@ class Process extends AbstractProcess {
     public function init() {
 
         if ($this->get('log_forwarding')) {
-            $this->logger->addDebug("Enabling log forwarding");
+            $this->debug("Enabling log forwarding");
 
             $stdout_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('stdout_file'));
             $stderr_logfile = $this->get('log_directory') . str_replace(array('%name%'), array($this->getMachineName()), $this->get('stderr_file'));
@@ -46,11 +46,13 @@ class Process extends AbstractProcess {
                 $dir = dirname($file);
 
                 if (!file_exists($dir)) {
+                    $this->debug(sprintf("Attempting to create log directory at '%s'", $dir));
                     $success = mkdir($dir, 0750, true);
                     if (!$success) throw new \Exception(sprintf("Unable to create '%s' directory for log files!", $dir));
                 }
 
                 if (!file_exists($file)) {
+                    $this->debug(sprintf("Attempting to touch logfile at '%s'", $file));
                     $success = touch($file);
                     if (!$success) throw new \Exception(sprintf("Unable to create '%s' file for logging!", $file));
                 }
@@ -65,17 +67,20 @@ class Process extends AbstractProcess {
                 $dir = dirname($file);
 
                 if (!file_exists($dir)) {
+                    $this->debug(sprintf("Attempting to create log directory at '%s'", $dir));
                     $success = mkdir($dir, 0750, true);
                     if (!$success) throw new \Exception(sprintf("Unable to create '%s' directory for error log files!", $dir));
                 }
 
                 if (!file_exists($file)) {
+                    $this->debug(sprintf("Attempting to touch logfile at '%s'", $file));
                     $success = touch($file);
                     if (!$success) throw new \Exception(sprintf("Unable to create '%s' file for error logging!", $file));
                 }
 
                 $this->stderr_file = $file;
             } else {
+                $this->debug("Disabling log forwarding");
                 $this->stderr_file = false;
             }
         }
@@ -103,6 +108,9 @@ class Process extends AbstractProcess {
 
         if (!$this->isRunning()) {
             if (!$this->down) {
+                $this->warn("Process is down");
+                $this->closePipes();
+                $this->closeProc();
                 //Down state is new, log it
                 $this->down = $now;
             }
@@ -118,6 +126,7 @@ class Process extends AbstractProcess {
     }
 
     public function execute() {
+        $this->info(sprintf("Process Starting"));
         $cmd = $this->get('up');
         $descriptorspec = array(
             0 => array('pipe', 'r'),
@@ -129,17 +138,27 @@ class Process extends AbstractProcess {
     }
 
     public function terminate() {
-        if (!empty($this->pipes)) {
-            foreach ($this->pipes as $i => $pipe) {
-                if (is_resource($pipe))
-                    fclose($pipe);
-                    $this->pipes[$i] = null;
-            }
+        if (count(array_filter($this->pipes)) > 0) {
+            $this->debug(sprintf("Closing Pipes"));
+            $this->closePipes();
         }
 
         if (is_resource($this->proc)) {
+            $this->info("Process Terminating");
             proc_close($this->proc);
         }
+    }
+
+    protected function closePipes() {
+        foreach ($this->pipes as $i => $pipe) {
+            if (is_resource($pipe))
+                fclose($pipe);
+            $this->pipes[$i] = null;
+        }
+    }
+
+    protected function closeProc() {
+        proc_close($this->proc);
     }
 
     /**
