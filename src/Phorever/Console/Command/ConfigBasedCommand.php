@@ -50,5 +50,7 @@ abstract class ConfigBasedCommand extends BaseCommand
         $processor = new Processor();
         $raw_config = json_decode(file_get_contents($file), true);
         $this->config = $processor->processConfiguration(new Configuration(), array($raw_config));
+
+        date_default_timezone_set($this->config['timezone']);
     }
 }
