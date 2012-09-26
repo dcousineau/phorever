@@ -18,7 +18,7 @@ The project is currently in an MVP state after some exploratory coding. Currentl
 
 **Currently *not* supported, but desperately needed before BETA1:**
 
-* Redirecting logs
+* ~~Redirecting logs~~
 * Processes that daemonize themselves (cannot check custom PIDs)
 * Giving up after certain thresholds
 * Notification on aberrant behavior
