@@ -44,8 +44,8 @@ EOT
             $logger->pushHandler($handler = new StreamHandler($this->config['logging']['directory'] . 'phorever.log', $level ?: Logger::INFO));
             $handler->setFormatter(new FileFormatter());
         } else {
-            $logger->pushHandler($stderrHandler = new ConsoleHandler($output->getErrorOutput(), Logger::ERROR, false));
             $logger->pushHandler($stdoutHandler = new ConsoleHandler($output, $level ?: Logger::INFO));
+            $logger->pushHandler($stderrHandler = new ConsoleHandler($output->getErrorOutput(), Logger::ERROR, false));
 
             $stderrHandler->setFormatter(new ConsoleFormatter());
             $stdoutHandler->setFormatter(new ConsoleFormatter());
