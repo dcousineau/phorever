@@ -144,8 +144,20 @@ class Process extends AbstractProcess {
         }
 
         if (is_resource($this->proc)) {
-            $this->info("Process Terminating");
+            foreach (range(1,5) as $i) {
+                proc_terminate($this->proc);
+                if (!$this->isRunning()) break;
+                sleep(1);
+            }
+
+            if ($this->isRunning()) {
+                //Still running after 5 seconds? Get aggressive
+                $this->error("Process is stubborn, sending KILL signal");
+                posix_kill($this->getPid(), 9);
+            }
+
             proc_close($this->proc);
+            $this->info("Process Terminated");
         }
     }
 
@@ -169,6 +181,16 @@ class Process extends AbstractProcess {
 
         $status = proc_get_status($this->proc);
         return (bool)$status['running'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getPid() {
+        if (!is_resource($this->proc)) return false;
+
+        $status = proc_get_status($this->proc);
+        return (int)$status['pid'];
     }
 
     /**

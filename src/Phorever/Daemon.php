@@ -60,7 +60,42 @@ class Daemon
         if (!$this->getPid())
             throw new \Exception("Process not running");
 
-        posix_kill($this->getPid(), SIGTERM);
+        foreach(range(1,25) as $i) {
+            switch ($i) {
+                case 1:
+                    posix_kill($this->getPid(), SIGTERM);
+
+                    if (posix_get_last_error() == SOCKET_EPERM)
+                        throw new \Exception("You do not have permission to stop this process");
+
+                    if ($this->status() != self::RUNNING_OK) {
+                        break 2;
+                    }
+
+                    break;
+                case 25:
+                    posix_kill($this->getPid(), SIGKILL);
+
+                    if ($this->status() != self::RUNNING_OK) {
+                        break 2;
+                    }
+
+                    break;
+                default:
+                    posix_kill($this->getPid(), SIGTERM);
+
+                    if ($this->status() != self::RUNNING_OK) {
+                        break 2;
+                    }
+
+                    break;
+            }
+            sleep(1);
+        }
+
+        if ($this->status() == self::RUNNING_OK)
+            throw new \Exception("There was an error attempting to end the process");
+
         $this->clearPid();
     }
 

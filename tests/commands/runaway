@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+declare(ticks=1);
+
+function receiveSig() {
+    $i = PHP_INT_MAX;
+    while(true) {
+        $i--;
+    }
+}
+
+pcntl_signal(SIGINT, 'receiveSig');
+pcntl_signal(SIGTERM, 'receiveSig');
+pcntl_signal(SIGHUP, 'receiveSig');
+
+echo "WARNING: This script deliberately ignores SIGINT, SIGTERM, and SIGHUP\n";
+echo "WARNING: You will be forced to SIGKILL to end this script. To do so,\n";
+echo "WARNING: issue the following command in another shell:\n\n";
+echo "kill -9 " . posix_getpid() . "\n\n";
+
+echo "Started " . microtime(true) . "\n";
+$i = PHP_INT_MAX;
+while(true) {
+    $i--;
+}
+
