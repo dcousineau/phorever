@@ -4,6 +4,7 @@
     "logging": {
         "directory": "./logs/"
     },
+    "tick": 5,
     "processes": [
         {
             "name": "Long Lived",
@@ -20,6 +21,8 @@
             "up": "./tests/commands/shortlived",
 
             "resurrect_after": 10,
+
+            "clones": 2,
 
             "log_forwarding": true
         }

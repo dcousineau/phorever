@@ -13,11 +13,30 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('pidfile')->cannotBeEmpty()->defaultValue('./phorever.pid')->end()
-                ->scalarNode('timezone')->cannotBeEmpty()->defaultValue('UTC')->end()
+                ->scalarNode('pidfile')
+                    ->cannotBeEmpty()
+                    ->defaultValue('./phorever.pid')
+                ->end()
+                ->scalarNode('timezone')
+                    ->cannotBeEmpty()
+                    ->defaultValue('UTC')
+                ->end()
+                ->scalarNode('tick')
+                    ->cannotBeEmpty()
+                    ->defaultValue(2)
+                    ->validate()
+                        ->ifTrue(function($value) {
+                            return !is_int($value) || $value < 1;
+                        })
+                        ->thenInvalid("Tick must be an integer 1 or greater")
+                    ->end()
+                ->end()
                 ->arrayNode('logging')
                     ->children()
-                        ->scalarNode('directory')->defaultValue('./logs/')->cannotBeEmpty()->end()
+                        ->scalarNode('directory')
+                            ->defaultValue('./logs/')
+                            ->cannotBeEmpty()
+                        ->end()
                     ->end()
                 ->end()
                 ->arrayNode('processes')
@@ -30,6 +49,8 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('up')->isRequired()->cannotBeEmpty()->end()
                             //failure management
                             ->scalarNode('resurrect_after')->defaultValue(5)->end()
+                            //clones
+                            ->scalarNode('clones')->defaultValue(1)->end()
                             //log files
                             ->booleanNode('log_forwarding')->defaultValue(true)->end()
                             ->scalarNode('stdout_file')->defaultValue('%name%.log')->cannotBeEmpty()->end()

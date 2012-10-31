@@ -53,9 +53,19 @@ class Phorever {
 
             $this->logger->addDebug(sprintf("Loaded Process '%s'", $process->getName()));
 
-            $process->execute();
+            foreach (range(1, $processConfig['clones']) as $i) {
+                $clone = clone $process;
 
-            $this->processes[] = $process;
+                if ($i > 1) {
+                    $this->logger->addDebug(sprintf("Adding clone %d for '%s'", $i, $clone->getName()));
+                }
+
+                $clone->execute();
+
+                $this->processes[] = $clone;
+            }
+
+            unset($process);
         }
 
         while (!$this->signalled) {
@@ -75,7 +85,7 @@ class Phorever {
                 $this->logger->addWarning("Process list empty, exiting");
                 exit(0);
             } else {
-                sleep(1);
+                sleep((int)$this->get('tick', 2));
             }
         }
     }
