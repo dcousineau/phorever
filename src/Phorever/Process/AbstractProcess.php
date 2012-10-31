@@ -123,11 +123,15 @@ abstract class AbstractProcess {
      * @param string $role
      * @return bool
      */
-    public function hasRole($role) {
-        $roles = $this->get('roles', array());
-        array_map('strtolower', $roles);
+    public function hasRole($roles) {
+        $roles = (array)$roles;
 
-        return in_array($role, $roles);
+        $member = $this->get('roles', array());
+        $member = array_map('strtolower', $member);
+
+        $intersection = array_intersect($roles, $member);
+
+        return !empty($intersection);
     }
 
     protected function debug($message, array $context = array()) {

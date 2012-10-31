@@ -31,10 +31,21 @@ class Phorever {
         pcntl_signal(SIGTERM, array($this, 'receiveSig'));
         pcntl_signal(SIGHUP, array($this, 'receiveSig'));
 
-        $role = null;
+        $roles = array();
         if (isset($options['role'])) {
-            $role = strtolower($options['role']);
-            $this->logger->addInfo(sprintf("Starting Phorever with role <info>%s</info>", $role));
+            $roles = $options['role'];
+            if (is_array($roles)) {
+                $roles = array_map('strtolower', $roles);
+            } else {
+                $roles = array(strtolower($roles));
+            }
+
+            if (count($roles) == 0)
+                $this->logger->addInfo("Starting Phorever with <comment>no role specified</comment> (all processes)");
+            else if (count($roles) == 1)
+                $this->logger->addInfo(sprintf("Starting Phorever with role <info>%s</info>", $roles[0]));
+            else
+                $this->logger->addInfo(sprintf("Starting Phorever with roles <info>%s</info>", implode(', ', $roles)));
         } else {
             $this->logger->addWarning("Starting Phorever without a role");
         }
@@ -48,7 +59,7 @@ class Phorever {
             //TODO: Select class based on configured type
             $process = new Process($processConfig, $this->logger);
 
-            if ($role && !$process->hasRole($role))
+            if (!empty($roles) && !$process->hasRole($roles))
                 continue; //Not in our target role
 
             $this->logger->addDebug(sprintf("Loaded Process '%s'", $process->getName()));

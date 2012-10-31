@@ -24,7 +24,7 @@ class StartCommand extends ConfigBasedCommand
              ->setDescription("Starts all Phorever processes")
              ->setDefinition(array(
                 new InputOption('daemon', 'd', InputOption::VALUE_NONE, 'Run as a daemon'),
-                new InputArgument('role', InputArgument::OPTIONAL, 'The role process roles to start', null),
+                new InputArgument('role', InputArgument::IS_ARRAY, 'The role(s) to indicate which processes to start, empty indicates all processes', null),
              ))
              ->setHelp(<<<EOT
 The <info>start</info> command starts Phorever processes
