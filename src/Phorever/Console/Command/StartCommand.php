@@ -41,6 +41,12 @@ EOT
         $logger = new Logger('phorever');
 
         if ($input->getOption('daemon')) {
+            if (!file_exists($this->config['logging']['directory'])) {
+                if (!mkdir($this->config['logging']['directory'], 0777, true)) {
+                    throw new \Exception("Unable to create logging directory");
+                }
+            }
+
             $logger->pushHandler($handler = new StreamHandler($this->config['logging']['directory'] . 'phorever.log', $level ?: Logger::INFO));
             $handler->setFormatter(new FileFormatter());
         } else {
