@@ -54,7 +54,7 @@ class Configuration implements ConfigurationInterface
                             //log files
                             ->booleanNode('log_forwarding')->defaultValue(true)->end()
                             ->scalarNode('stdout_file')->defaultValue('%name%.log')->cannotBeEmpty()->end()
-                            ->scalarNode('stderr_file')->defaultValue('%name%.err.log')->cannotBeEmpty()->end()
+                            ->scalarNode('stderr_file')->defaultValue('%name%.err')->cannotBeEmpty()->end()
                         ->end()
                     ->end()
                 ->end()
