@@ -1,11 +1,18 @@
 <?php
 namespace Phorever;
 
+use Monolog\Logger;
+
 class Daemon
 {
     const RUNNING_OK = "running_ok";
     const STOPPED_BUT_PID_PRESENT = "stopped_but_pid_present";
     const STOPPED_OK = "stopped_ok";
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
     /**
      * @var bool
@@ -27,8 +34,9 @@ class Daemon
      */
     protected $callback;
 
-    public function __construct($pidfilepath) {
+    public function __construct($pidfilepath, Logger $logger) {
         $this->setPidFilePath($pidfilepath);
+        $this->logger = $logger;
     }
 
     public function setPidFilePath($file) {
@@ -63,28 +71,34 @@ class Daemon
         foreach(range(1,25) as $i) {
             switch ($i) {
                 case 1:
+                    $this->logger->debug('Sending SIGTERM');
                     posix_kill($this->getPid(), SIGTERM);
 
                     if (posix_get_last_error() == SOCKET_EPERM)
                         throw new \Exception("You do not have permission to stop this process");
 
                     if ($this->status() != self::RUNNING_OK) {
+                        $this->logger->debug('First attempt results in full stop!');
                         break 2;
                     }
 
                     break;
                 case 25:
+                    $this->logger->debug('Sending SIGKILL!!');
                     posix_kill($this->getPid(), SIGKILL);
 
                     if ($this->status() != self::RUNNING_OK) {
+                        $this->logger->debug('Results in full stop!');
                         break 2;
                     }
 
                     break;
                 default:
+                    $this->logger->debug('Sending another SIGTERM');
                     posix_kill($this->getPid(), SIGTERM);
 
                     if ($this->status() != self::RUNNING_OK) {
+                        $this->logger->debug('Results in full stop!');
                         break 2;
                     }
 

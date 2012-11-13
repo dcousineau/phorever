@@ -2,10 +2,7 @@
 declare(ticks = 1);
 namespace Phorever;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Phorever\Process\Process;
 use Phorever\Monolog\Formatter\ConsoleFormatter;
 
@@ -105,7 +102,8 @@ class Phorever {
         $this->logger->addInfo("Stopping Phorever and all subprocesses");
         foreach ($this->processes as $process) {
             /** @var $process Process */
-            $process->terminate();
+            if ($process->isRunning())
+                $process->terminate();
         }
     }
 

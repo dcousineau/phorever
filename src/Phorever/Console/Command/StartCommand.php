@@ -34,33 +34,10 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $level = false;
-        if ($input->getOption('verbose'))
-            $level = Logger::DEBUG;
-
-        $logger = new Logger('phorever');
+        $phorever = new Phorever($this->config, $this->getLogger());
 
         if ($input->getOption('daemon')) {
-            if (!file_exists($this->config['logging']['directory'])) {
-                if (!mkdir($this->config['logging']['directory'], 0777, true)) {
-                    throw new \Exception("Unable to create logging directory");
-                }
-            }
-
-            $logger->pushHandler($handler = new StreamHandler($this->config['logging']['directory'] . 'phorever.log', $level ?: Logger::INFO));
-            $handler->setFormatter(new FileFormatter());
-        } else {
-            $logger->pushHandler($stdoutHandler = new ConsoleHandler($output, $level ?: Logger::INFO));
-            $logger->pushHandler($stderrHandler = new ConsoleHandler($output->getErrorOutput(), Logger::ERROR, false));
-
-            $stderrHandler->setFormatter(new ConsoleFormatter());
-            $stdoutHandler->setFormatter(new ConsoleFormatter());
-        }
-
-        $phorever = new Phorever($this->config, $logger);
-
-        if ($input->getOption('daemon')) {
-            $daemon = new Daemon($this->config['pidfile']);
+            $daemon = new Daemon($this->config['pidfile'], $this->getLogger());
 
             $output->write("Starting Phorever... ");
             $daemon->start(function() use ($phorever, $input) {

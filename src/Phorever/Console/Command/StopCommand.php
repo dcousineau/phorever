@@ -26,7 +26,7 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write("Stopping Phorever...");
-        $daemon = new Daemon($this->config['pidfile']);
+        $daemon = new Daemon($this->config['pidfile'], $this->getLogger());
 
         $daemon->stop();
         $output->writeln(" <info>OK!</info>");
