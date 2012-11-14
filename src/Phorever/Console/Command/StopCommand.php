@@ -14,13 +14,12 @@ class StopCommand extends ConfigBasedCommand
     protected function configure()
     {
         $this->setName("stop")
-            ->setDescription("Starts all Phorever processes")
-            ->setDefinition(array(
-            ))
-            ->setHelp(<<<EOT
+             ->setDescription("Starts all Phorever processes")
+             ->setDefinition(array())
+             ->setHelp(<<<EOT
 The <info>stop</info> command stops all configured Phorever processes
 EOT
-        );
+             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

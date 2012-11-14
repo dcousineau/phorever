@@ -123,7 +123,9 @@ class Phorever {
 
                 break;
             case SIGHUP:
-
+                $this->logger->addWarning("Received SIGHUP");
+                $this->stop();
+                exit(0);
 
                 break;
             default:

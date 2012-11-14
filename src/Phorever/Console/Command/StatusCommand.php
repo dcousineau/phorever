@@ -14,13 +14,12 @@ class StatusCommand extends ConfigBasedCommand
     protected function configure()
     {
         $this->setName("status")
-            ->setDescription("Checks the status of Phorever")
-            ->setDefinition(array(
-            ))
-            ->setHelp(<<<HTML
+             ->setDescription("Checks the status of Phorever")
+             ->setDefinition(array())
+             ->setHelp(<<<HTML
 The <info>status</info> shows the status of Phorever
 HTML
-        );
+             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
