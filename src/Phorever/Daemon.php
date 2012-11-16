@@ -118,10 +118,10 @@ class Daemon
             $output = array();
             $result = 0;
 
-            exec("ps $pid", $output, $result);
+            $up = posix_kill($pid, 0);
 
             // check the number of lines that were returned
-            if(count($output) >= 2){
+            if($up){
                 return self::RUNNING_OK;
             } else {
                 return self::STOPPED_BUT_PID_PRESENT;
