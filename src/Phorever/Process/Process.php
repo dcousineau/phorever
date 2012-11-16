@@ -138,26 +138,40 @@ class Process extends AbstractProcess {
     }
 
     public function terminate() {
-        if (count(array_filter($this->pipes)) > 0) {
-            $this->debug(sprintf("Closing Pipes"));
-            $this->closePipes();
-        }
-
         if (is_resource($this->proc)) {
-            foreach (range(1,5) as $i) {
-                proc_terminate($this->proc);
-                if (!$this->isRunning()) break;
+            if ($this->isRunning()) {
+                posix_kill($this->getPid(), SIGTERM);
+            }
+
+            if (!$this->isRunning()) {
+                proc_close($this->proc);
+                $this->info("Process Terminated");
+                $this->closePipes();
+                return true;
+            } else {
+                $this->warn("Failed to terminate process...");
+                return false;
+            }
+        }
+    }
+
+    public function kill() {
+        if (is_resource($this->proc)) {
+            if ($this->isRunning()) {
+                $this->error("Performing a forceful KILL on process...");
+                posix_kill($this->getPid(), SIGKILL);
                 sleep(1);
             }
 
-            if ($this->isRunning()) {
-                //Still running after 5 seconds? Get aggressive
-                $this->error("Process is stubborn, sending KILL signal");
-                posix_kill($this->getPid(), 9);
+            if (!$this->isRunning()) {
+                proc_close($this->proc);
+                $this->info("Process Terminated");
+                $this->closePipes();
+                return true;
+            } else {
+                $this->error("Failed to KILL process...");
+                return false;
             }
-
-            proc_close($this->proc);
-            $this->info("Process Terminated");
         }
     }
 

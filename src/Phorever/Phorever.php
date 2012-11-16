@@ -100,10 +100,41 @@ class Phorever {
 
     public function stop() {
         $this->logger->addInfo("Stopping Phorever and all subprocesses");
-        foreach ($this->processes as $process) {
-            /** @var $process Process */
-            if ($process->isRunning())
-                $process->terminate();
+        foreach (range(1,10) as $i) {
+            foreach ($this->processes as $j => $process) {
+                /** @var $process Process */
+                if (!$process->isRunning()) {
+                    unset($this->processes[$j]);
+                    continue;
+                }
+
+                switch ($i) {
+                    case 10:
+                        $this->logger->debug("Attempting to KILL {$process->getName()}...");
+                        if ($process->kill()) {
+                            unset($this->processes[$j]);
+                        }
+                        break;
+                    default:
+                        $this->logger->debug("Attempting to terminate {$process->getName()}...");
+                        if ($process->terminate()) {
+                           unset($this->processes[$j]);
+                        }
+                        break;
+                }
+            }
+
+            if (count($this->processes) == 0) break;
+
+            sleep(1);
+        }
+
+        if (count($this->processes) != 0) {
+            $this->logger->addCritical("Could not stop all processes!");
+            exit(-1);
+        } else {
+            $this->logger->addInfo("Stopped all subprocesses, exiting!");
+            exit(0);
         }
     }
 
@@ -129,11 +160,11 @@ class Phorever {
 
                 break;
             default:
+                $this->logger->addCritical("Received Unknown Signal $sig");
+                exit(127);
 
                 break;
         }
-
-        exit(127);
     }
 
     /**
