@@ -134,7 +134,7 @@ class Process extends AbstractProcess {
             2 => array('pipe', 'w'),
         );
 
-        $this->proc = proc_open($cmd, $descriptorspec, $this->pipes);
+        $this->proc = proc_open("exec $cmd", $descriptorspec, $this->pipes);
     }
 
     public function terminate() {
