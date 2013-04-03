@@ -37,7 +37,7 @@ abstract class ConfigBasedCommand extends BaseCommand
     {
         parent::__construct($name);
 
-        $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file to execute from, defaults to ./phorever.json', './phorever.json');
+        $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file listing processes and roles', './phorever.json');
     }
 
     /**

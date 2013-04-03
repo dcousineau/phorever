@@ -17,7 +17,15 @@ class StopCommand extends ConfigBasedCommand
              ->setDescription("Starts all Phorever processes")
              ->setDefinition(array())
              ->setHelp(<<<EOT
-The <info>stop</info> command stops all configured Phorever processes
+The <info>stop</info> command stops the Phorever daemon.
+
+This command will attempt to gracefully stop said daemon for 30 seconds before
+sending a SIGKILL.
+
+Each process is given 10 seconds by the daemon to successfully terminate before
+it sends said process a SIGKILL.
+
+The pid file is only cleaned up on a successful stop.
 EOT
              );
     }

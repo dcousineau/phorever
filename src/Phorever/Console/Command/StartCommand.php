@@ -28,7 +28,16 @@ class StartCommand extends ConfigBasedCommand
                 new InputArgument('role', InputArgument::IS_ARRAY, 'The role(s) to indicate which processes to start, empty indicates all processes', null),
              ))
              ->setHelp(<<<EOT
-The <info>start</info> command starts Phorever processes
+The <info>start</info> command executes and monitors all processes matching the requested
+roles. If no roles are present, Phorever will start and monitor all processes.
+
+Role selection is OR based, meaning executing a "phorever start rolea roleb"
+will start all processes with at least rolea OR roleb associated.
+
+Specifying the --daemon option will cause Phorever to fork into the background
+leaving behind a pid file in the path specified by the configuration file.
+
+Phorever will NOT start if there is a pid file present.
 EOT
              );
     }

@@ -17,14 +17,15 @@ class StatusCommand extends ConfigBasedCommand
              ->setDescription("Checks the status of Phorever")
              ->setDefinition(array())
              ->setHelp(<<<HTML
-The <info>status</info> shows the status of Phorever
+The <info>status</info> command shows the status of Phorever based on the pid file present
+in the path specified by the configuration file
 HTML
              );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $daemon = new Daemon($this->config['pidfile']);
+        $daemon = new Daemon($this->config['pidfile'], $this->getLogger());
 
         switch ($daemon->status()) {
             case Daemon::RUNNING_OK:
