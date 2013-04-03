@@ -1,42 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
     <title>phorever by dcousineau</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/dcousineau/phorever">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/dcousineau/phorever/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/dcousineau/phorever/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <header>
-      <div class="container">
-        <h1>phorever</h1>
-        <h2>Role-based daemon and cron management built in PHP for PHP projects</h2>
+    <div class="wrapper">
 
-        <section id="downloads">
-          <!--<a href="https://github.com/dcousineau/phorever/zipball/master" class="btn">Download as .zip</a>-->
-          <!--<a href="https://github.com/dcousineau/phorever/tarball/master" class="btn">Download as .tar.gz</a>-->
-          <a href="https://github.com/dcousineau/phorever" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+      <section>
+        <div id="title">
+          <h1>phorever</h1>
+          <p>Role-based daemon and cron management built in PHP for PHP projects</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/dcousineau">dcousineau</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
 
-    <div class="container">
-      <section id="main_content">
-        <h2>Overview &amp; Goals</h2>
+        <h1>Phorever</h1>
 
-<p>Phorever provides an easy way to launch and manage background processes based on configuration defined in a <code>phorever.json</code> file.</p>
+<p>Role-based long-running process daemon for PHP projects!</p>
+
+<h2>Overview &amp; Goals</h2>
+
+<p>Phorever provides an easy way to launch and manage background processes based on configuration defined in a <code>phorever.json</code> file in your project's root directory.</p>
 
 <p>Phorever will automatically keep track of all running processes, respawning them based on configured behavior, and fire notifications on aberrant behavior.</p>
 
 <p>Phorever is installable via <a href="http://getcomposer.org/">Composer</a> and automatically drops a binary to interact with.</p>
 
 <p>Phorever's ultimate goal is to make provisioning servers and monitoring long-running processes more idiot proof. For example, a simple <code>phorever start scheduler</code> will ensure all background processes required for a scheduler server are running.</p>
+
+<h2>Installation</h2>
+
+<p>Phorever is provided as a <a href="http://getcomposer.org/">composer package</a> and requires PHP 5.4 and up. To use Phorever, simply add:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"dcousineau/phorever"</span><span class="p">:</span> <span class="s2">"dev-master"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Composer will attempt to symlink the Phorever executable into your own bin folder. It is advisable that you make sure your own <code>composer.json</code> file is updated to define where that bin directory is located:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"config"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"bin-dir"</span><span class="p">:</span> <span class="s2">"bin"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>Configuration</h2>
+
+<p>Phorever by default reads from a configuration file found in your project root named <code>phorever.json</code>.</p>
+
+<p>This configuration file defines the individual processes that should be launched and tracked, what roles they belong to, where log files should be dumped, among other things.</p>
+
+<p>An example configuration file would look like:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"pidfile"</span><span class="p">:</span> <span class="s2">"./phorever_cool.pid"</span><span class="p">,</span>
+    <span class="nt">"timezone"</span><span class="p">:</span> <span class="s2">"America/Chicago"</span><span class="p">,</span>
+    <span class="nt">"logging"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"directory"</span><span class="p">:</span> <span class="s2">"./logs/"</span>
+    <span class="p">},</span>
+    <span class="nt">"processes"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Long Lived"</span><span class="p">,</span>
+            <span class="nt">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"roleb"</span><span class="p">],</span>
+
+            <span class="nt">"up"</span><span class="p">:</span> <span class="s2">"./tests/commands/longlived"</span><span class="p">,</span>
+
+            <span class="nt">"log_forwarding"</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Short Lived"</span><span class="p">,</span>
+            <span class="nt">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"rolea"</span><span class="p">],</span>
+
+            <span class="nt">"up"</span><span class="p">:</span> <span class="s2">"./tests/commands/shortlived"</span><span class="p">,</span>
+
+            <span class="nt">"resurrect_after"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+
+            <span class="nt">"clones"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+
+            <span class="nt">"log_forwarding"</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Runaway"</span><span class="p">,</span>
+            <span class="nt">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"runaway"</span><span class="p">],</span>
+
+            <span class="nt">"up"</span><span class="p">:</span> <span class="s2">"./tests/commands/runaway"</span><span class="p">,</span>
+
+            <span class="nt">"resurrect_after"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+            <span class="nt">"log_forwarding"</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Running the command <code>bin/phorever start rolea roleb</code> will launch both the "Short Lived" and "Long Lived" processes given they both belong to at least one of the roles we've requested to start.</p>
+
+<p>Passing the <code>--daemon</code> parameter to Phorever will cause it to fork into the background.</p>
 
 <h2>Project Status</h2>
 
@@ -45,7 +132,6 @@
 <p><strong>Currently <em>not</em> supported, but desperately needed before BETA1:</strong></p>
 
 <ul>
-<li>Redirecting logs</li>
 <li>Processes that daemonize themselves (cannot check custom PIDs)</li>
 <li>Giving up after certain thresholds</li>
 <li>Notification on aberrant behavior</li>
@@ -57,8 +143,9 @@
 <li>Status monitor and statistical logs</li>
 </ul>
       </section>
-    </div>
 
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
