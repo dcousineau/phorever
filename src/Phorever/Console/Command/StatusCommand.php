@@ -14,7 +14,7 @@ class StatusCommand extends ConfigBasedCommand
     protected function configure()
     {
         $this->setName("status")
-             ->setDescription("Checks the status of Phorever")
+             ->setDescription("Checks the status of the Phorever daemon")
              ->setDefinition(array())
              ->setHelp(<<<HTML
 The <info>status</info> command shows the status of Phorever based on the pid file present

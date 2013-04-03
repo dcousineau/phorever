@@ -10,12 +10,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Phorever\Phorever;
 use Phorever\Daemon;
 
-use Monolog\Logger;
-use Phorever\Monolog\Handler\ConsoleHandler;
-use Monolog\Handler\StreamHandler;
-use Phorever\Monolog\Formatter\ConsoleFormatter;
-use Phorever\Monolog\Formatter\FileFormatter;
-
 class StartCommand extends ConfigBasedCommand
 {
     protected function configure()

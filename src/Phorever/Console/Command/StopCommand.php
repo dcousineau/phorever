@@ -14,7 +14,7 @@ class StopCommand extends ConfigBasedCommand
     protected function configure()
     {
         $this->setName("stop")
-             ->setDescription("Starts all Phorever processes")
+             ->setDescription("Starts Phorever processes based on specified roles")
              ->setDefinition(array())
              ->setHelp(<<<EOT
 The <info>stop</info> command stops the Phorever daemon.
