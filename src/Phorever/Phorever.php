@@ -56,8 +56,10 @@ class Phorever {
             //TODO: Select class based on configured type
             $process = new Process($processConfig, $this->logger);
 
-            if (!empty($roles) && !$process->hasRole($roles))
+            if (!empty($roles) && !$process->hasRole($roles)) {
+                $this->logger->addDebug(sprintf("Skipping '%s' because not in target role", $process->getName()));
                 continue; //Not in our target role
+            }
 
             $this->logger->addDebug(sprintf("Loaded Process '%s'", $process->getName()));
 
