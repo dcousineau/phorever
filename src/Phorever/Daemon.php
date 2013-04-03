@@ -68,7 +68,7 @@ class Daemon
         if (!$this->getPid())
             throw new \Exception("Process not running");
 
-        foreach(range(1,25) as $i) {
+        foreach(range(1, 10) as $i) {
             switch ($i) {
                 case 1:
                     $this->logger->debug('Sending SIGTERM');
@@ -83,7 +83,7 @@ class Daemon
                     }
 
                     break;
-                case 25:
+                case 10:
                     $this->logger->debug('Sending SIGKILL!!');
                     posix_kill($this->getPid(), SIGKILL);
 
@@ -104,7 +104,7 @@ class Daemon
 
                     break;
             }
-            sleep(1);
+            sleep(3);
         }
 
         if ($this->status() == self::RUNNING_OK)
@@ -115,9 +115,6 @@ class Daemon
 
     public function status() {
         if ($pid = $this->getPid(true)) {
-            $output = array();
-            $result = 0;
-
             $up = posix_kill($pid, 0);
 
             // check the number of lines that were returned

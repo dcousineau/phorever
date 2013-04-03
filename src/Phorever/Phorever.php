@@ -131,10 +131,10 @@ class Phorever {
 
         if (count($this->processes) != 0) {
             $this->logger->addCritical("Could not stop all processes!");
-            exit(-1);
+            return false;
         } else {
             $this->logger->addInfo("Stopped all subprocesses, exiting!");
-            exit(0);
+            return true;
         }
     }
 
@@ -143,25 +143,22 @@ class Phorever {
         switch($sig) {
             case SIGTERM:
                 $this->logger->addError("Received SIGTERM");
-                $this->stop();
-                exit(0);
+                exit($this->stop() ? 0 : -1);
 
                 break;
             case SIGINT:
                 $this->logger->addWarning("Received SIGINT");
-                $this->stop();
-                exit(0);
+                exit($this->stop() ? 0 : -1);
 
                 break;
             case SIGHUP:
                 $this->logger->addWarning("Received SIGHUP");
-                $this->stop();
-                exit(0);
+                exit($this->stop() ? 0 : -1);
 
                 break;
             default:
                 $this->logger->addCritical("Received Unknown Signal $sig");
-                exit(127);
+                exit($this->stop() ? 127 : 127);
 
                 break;
         }

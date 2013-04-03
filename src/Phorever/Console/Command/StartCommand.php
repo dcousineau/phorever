@@ -24,6 +24,7 @@ class StartCommand extends ConfigBasedCommand
              ->setDescription("Starts all Phorever processes")
              ->setDefinition(array(
                 new InputOption('daemon', 'd', InputOption::VALUE_NONE, 'Run as a daemon'),
+                new InputOption('force-pidfile', 'p', InputOption::VALUE_NONE, 'Force the creation of a PID file when not running as a daemon'),
                 new InputArgument('role', InputArgument::IS_ARRAY, 'The role(s) to indicate which processes to start, empty indicates all processes', null),
              ))
              ->setHelp(<<<EOT
@@ -47,6 +48,16 @@ EOT
             });
             $output->writeln("<info>OK!</info>");
         } else {
+            if ($input->getOption('force-pidfile')) {
+                if (file_exists($this->config['pidfile'])) {
+                    throw new \Exception("PID File {$this->config['pidfile']} already exists!");
+                }
+
+                $this->logger->debug("Writing PID File");
+
+                file_put_contents($this->config['pidfile'], getmypid());
+            }
+
             $phorever->run(array(
                 'role' => $input->getArgument('role')
             ));
