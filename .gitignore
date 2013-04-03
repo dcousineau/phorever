@@ -1,0 +1,7 @@
+.DS_Store
+.idea
+composer.lock
+logs
+phorever.json
+src
+vendor
