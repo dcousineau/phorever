@@ -26,7 +26,6 @@ class Phorever {
     public function run(array $options = array()) {
         pcntl_signal(SIGINT, array($this, 'receiveSig'));
         pcntl_signal(SIGTERM, array($this, 'receiveSig'));
-        pcntl_signal(SIGHUP, array($this, 'receiveSig'));
 
         $roles = array();
         if (isset($options['role'])) {
@@ -152,10 +151,6 @@ class Phorever {
                 $this->logger->addWarning("Received SIGINT");
                 exit($this->stop() ? 0 : -1);
 
-                break;
-            case SIGHUP:
-                $this->logger->addWarning("Received SIGHUP, ignoring and running as planned");
-                
                 break;
             default:
                 $this->logger->addCritical("Received Unknown Signal $sig");
