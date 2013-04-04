@@ -154,9 +154,8 @@ class Phorever {
 
                 break;
             case SIGHUP:
-                $this->logger->addWarning("Received SIGHUP");
-                exit($this->stop() ? 0 : -1);
-
+                $this->logger->addWarning("Received SIGHUP, ignoring and running as planned");
+                
                 break;
             default:
                 $this->logger->addCritical("Received Unknown Signal $sig");
