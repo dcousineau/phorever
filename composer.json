@@ -13,8 +13,8 @@
     "require": {
         "php": ">=5.3.3",
         "ext-pcntl": "*",
-        "symfony/console": "2.1.*",
-        "symfony/config": "2.1.*",
+        "symfony/console": "2.2.*",
+        "symfony/config": "2.2.*",
         "monolog/monolog": "1.2.*"
     },
     "require-dev": {
